@@ -1,5 +1,5 @@
 //! The Security WMI Providers allow applications to interact with the Trusted Platform Module (TPM)
-//! and BitLocker Drive Encryption (BDE) through the unified management framework of Windows
+//! and `BitLocker` Drive Encryption (BDE) through the unified management framework of Windows
 //! Management Instrumentation (WMI).
 //!
 //! Example:
@@ -7,7 +7,7 @@
 //! use wmi_security::COMLibrary;
 //! use wmi_security::{get_encryption_volume_state, get_tpm_state};
 //!
-//! fn main() {
+//! fn print_security_values() {
 //!     let com_con = COMLibrary::new().unwrap();
 //!
 //!     println!(
@@ -23,7 +23,7 @@ use wmi::WMIConnection;
 
 pub use wmi::COMLibrary;
 
-/// The Win32_Tpm class represents the Trusted Platform Module (TPM), a hardware security chip
+/// The `Win32_Tpm` class represents the Trusted Platform Module (TPM), a hardware security chip
 /// that provides a root of trust for a computer system.
 #[derive(Deserialize, Debug)]
 #[serde(rename = "Win32_Tpm")]
@@ -102,12 +102,13 @@ pub struct Win32Tpm {
     pub physical_presence_version_info: Option<String>,
 }
 
-/// The Win32_EncryptableVolume WMI provider class represents an area of storage on a hard disk that
-/// can be protected by using BitLocker Drive Encryption. Only NTFS volumes can be encrypted. It can
-/// be a volume that contains an operating system, or it can be a data volume on the local disk. It
-/// cannot be a network drive.
+/// The `Win32_EncryptableVolume` WMI provider class represents an area of storage on a hard disk that
+/// can be protected by using `BitLocker` Drive Encryption.
+/// Only NTFS volumes can be encrypted.
+/// It can be a volume that contains an operating system, or it can be a data volume on the local disk.
+/// It cannot be a network drive.
 ///
-/// To realize the benefits of BitLocker, you must specify a protection method for the volume's
+/// To realize the benefits of `BitLocker`, you must specify a protection method for the volume's
 /// encryption key and then fully encrypt the volume.
 #[derive(Deserialize, Debug)]
 #[serde(rename = "Win32_EncryptableVolume")]
@@ -156,9 +157,8 @@ pub fn get_encryption_volume_state(
     let wmi_con = WMIConnection::with_namespace_path(
         "Root\\CIMV2\\Security\\MicrosoftVolumeEncryption",
         com_con,
-    )
-    .unwrap();
-    let results: Vec<Win32EncryptableVolume> = wmi_con.query().unwrap();
+    )?;
+    let results: Vec<Win32EncryptableVolume> = wmi_con.query()?;
 
     Ok(results)
 }
